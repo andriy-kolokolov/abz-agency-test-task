@@ -10,14 +10,6 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class RegisterRequest extends FormRequest
 {
-    public function authorize() : bool
-    {
-        $token = $this->header('Token');
-
-        // todo check token
-        dd('header token', $token);
-    }
-
     public function rules() : array
     {
         $UaCellPhoneRegex = config('regex.phone_numbers.cell_phone.ua');
@@ -51,7 +43,7 @@ class RegisterRequest extends FormRequest
 
     private function validatePhotoSize() : void
     {
-        // photo must be 60 X 60 min
+        // photo must be 70 X 70 min
         // TODO: Implement validatePhotoSize() method.
     }
 }

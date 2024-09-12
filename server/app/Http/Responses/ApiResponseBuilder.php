@@ -30,7 +30,7 @@ class ApiResponseBuilder
         return response()->json($response, $statusCode);
     }
 
-    final public static function token(bool $success, ?string $token) : JsonResponse
+    final public static function token(bool $success, string $token) : JsonResponse
     {
         $response = [
             'success' => $success,

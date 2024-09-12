@@ -114,6 +114,7 @@ return [
 
     'token' => [
         'registration' => [
+            'name'              => 'registration_token',
             'expiration_minutes' => 40,
         ],
     ],
