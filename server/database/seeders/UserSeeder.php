@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     public function run() : void
     {
-        $this->call([
-            UserSeeder::class,
-        ]);
+        UserFactory::new()->count(45)->create();
     }
 }
