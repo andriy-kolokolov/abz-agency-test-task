@@ -1,11 +1,46 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
+    "compilerOptions": {
+        /* Visit https://aka.ms/tsconfig to read more about this file */
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": [
+                "./*"
+            ],
+        },
+        "types": [
+            "node"
+        ],
+        "target": "es2022",
+        "useDefineForClassFields": true,
+        "module": "esnext",
+        "lib": [
+            "es2023",
+            "DOM"
+        ],
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "preserve",
+        /* Linting */
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true
     },
-    {
-      "path": "./tsconfig.app.json"
-    }
-  ]
+    "include": [
+        "./**/*.ts",
+        "./**/*.tsx",
+        "./**/*.vue"
+    ],
+    "references": [
+        {
+            "path": "./tsconfig.node.json"
+        }
+    ]
 }
