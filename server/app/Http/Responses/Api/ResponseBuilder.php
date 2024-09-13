@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Responses;
+namespace App\Http\Responses\Api;
 
 use App\Constants\ResponseStatus;
 use Illuminate\Contracts\Support\MessageBag;
 use Illuminate\Http\JsonResponse;
 
-class ApiResponseBuilder
+class ResponseBuilder
 {
     final public static function success(array $data = null, string $message = '', int $statusCode = ResponseStatus::OK) : JsonResponse
     {

@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Constants\ResponseStatus;
-use App\Http\Responses\ApiResponseBuilder;
+use App\Http\Responses\Api\ResponseBuilder;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -25,7 +25,7 @@ class RegisterRequest extends FormRequest
 
     protected function failedValidation(Validator $validator) : void
     {
-        $data = ApiResponseBuilder::error(
+        $data = ResponseBuilder::error(
             message    : __('response_messages.validation_error'),
             errors     : $validator->errors(),
             statusCode : ResponseStatus::UNPROCESSABLE_CONTENT,
@@ -37,7 +37,8 @@ class RegisterRequest extends FormRequest
     public function messages() : array
     {
         return [
-            'phone.regex' => __('validation.regex_cell_phone.ua'),
+            'phone.regex'        => __('validation.regex_cell_phone.ua'),
+            'position_id.exists' => 'Position with this ID does not exist',
         ];
     }
 

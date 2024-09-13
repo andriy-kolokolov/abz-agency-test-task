@@ -4,7 +4,7 @@ namespace App\Http\Controllers\api\v1;
 
 use App\Contracts\TokenService;
 use App\Http\Controllers\Controller;
-use App\Http\Responses\ApiResponseBuilder;
+use App\Http\Responses\Api\ResponseBuilder;
 use Illuminate\Http\JsonResponse;
 
 class TokenController extends Controller
@@ -20,6 +20,6 @@ class TokenController extends Controller
     {
         $token = $this->tokenService->generateRegistrationToken();
 
-        return ApiResponseBuilder::token(true, $token->token);
+        return ResponseBuilder::token(true, $token->token);
     }
 }

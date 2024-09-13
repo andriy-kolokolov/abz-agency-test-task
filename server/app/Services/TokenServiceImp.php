@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Constants\ResponseStatus;
 use App\Contracts\TokenRepository;
 use App\Contracts\TokenService;
-use App\Http\Responses\ApiResponseBuilder;
+use App\Http\Responses\Api\ResponseBuilder;
 use App\Models\Token;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Str;
@@ -33,22 +33,20 @@ class TokenServiceImp implements TokenService
         return $token;
     }
 
-    public function validateToken(string|Token $token) : bool
+    public function validateToken(string|Token $token) : void
     {
         if ( !$this->tokenRepository->exists($token)) {
-            throw new HttpResponseException(ApiResponseBuilder::error(
-                message    : __('response_messages.invalid_token'),
+            throw new HttpResponseException(ResponseBuilder::error(
+                message    : __('response_messages.token.invalid'),
                 statusCode : ResponseStatus::TOKEN_INVALID,
             ));
         }
 
         if ($this->tokenRepository->isExpired($token)) {
-            throw new HttpResponseException(ApiResponseBuilder::error(
-                message    : __('response_messages.token_expired'),
+            throw new HttpResponseException(ResponseBuilder::error(
+                message    : __('response_messages.token.expired'),
                 statusCode : ResponseStatus::TOKEN_EXPIRED,
             ));
         }
-
-        return true;
     }
 }
