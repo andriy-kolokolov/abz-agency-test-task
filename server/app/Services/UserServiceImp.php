@@ -21,7 +21,7 @@ class UserServiceImp implements UserService
         return $this->userRepository->getAll();
     }
 
-    public function createUser(array $validated) : bool
+    public function createUser(array $validated) : User
     {
         return $this->userRepository->create($validated);
     }

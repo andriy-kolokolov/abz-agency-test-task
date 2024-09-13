@@ -9,7 +9,7 @@ interface UserService
 {
     public function getAllUsers() : Collection;
 
-    public function createUser(array $validated) : bool;
+    public function createUser(array $validated) : User;
 
     public function getUserById(int $id) : User;
 }

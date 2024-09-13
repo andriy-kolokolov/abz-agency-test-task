@@ -11,4 +11,6 @@ interface TokenRepository
     public function exists(string|Token $token) : bool;
 
     public function isExpired(string|Token $token) : bool;
+
+    public function delete(string|Token $token) : bool;
 }

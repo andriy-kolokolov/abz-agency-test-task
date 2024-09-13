@@ -31,4 +31,13 @@ class TokenRepositoryImp implements TokenRepository
             ->where('expires_at', '<', now())
             ->exists();
     }
+
+    public function delete(Token|string $token) : bool
+    {
+        if ($token instanceof Token) {
+            $token = $token->token;
+        }
+
+        return Token::where('token', $token)->delete();
+    }
 }

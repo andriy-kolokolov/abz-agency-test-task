@@ -9,4 +9,6 @@ interface TokenService
     public function generateRegistrationToken() : Token;
 
     public function validateToken(string $token) : void;
+
+    public function deleteToken(string $token) : bool;
 }

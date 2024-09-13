@@ -49,4 +49,9 @@ class TokenServiceImp implements TokenService
             ));
         }
     }
+
+    public function deleteToken(string $token) : bool
+    {
+        return $this->tokenRepository->delete($token);
+    }
 }
