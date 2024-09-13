@@ -3,11 +3,13 @@
 use App\Constants\ResponseStatus;
 use App\Http\Controllers\api\v1\TokenController;
 use App\Http\Controllers\api\v1\UserController;
+use App\Http\Controllers\PositionController;
 use App\Http\Responses\Api\ResponseBuilder;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::get('/token', TokenController::class);
+    Route::get('/positions', PositionController::class);
 
     Route::prefix('/users')->group(function () {
         Route::post('/', [UserController::class, 'store']);
