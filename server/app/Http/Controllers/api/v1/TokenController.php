@@ -20,6 +20,6 @@ class TokenController extends Controller
     {
         $token = $this->tokenService->generateRegistrationToken();
 
-        return ResponseBuilder::token(true, $token->token);
+        return ResponseBuilder::token($token->token);
     }
 }

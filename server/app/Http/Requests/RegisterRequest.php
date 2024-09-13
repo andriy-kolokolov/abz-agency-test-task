@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Constants\ResponseStatus;
 use App\Http\Responses\Api\ResponseBuilder;
+use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -14,12 +15,22 @@ class RegisterRequest extends FormRequest
     {
         $UaCellPhoneRegex = config('regex.phone_numbers.cell_phone.ua');
 
+        $this->ensureNoPhoneEmailConflict();
+
         return [
             'name'        => ['required', 'string', 'min:2', 'max:60'],
-            'email'       => ['required', 'min:6', 'max:100', 'email', 'unique:users,email'],
+            'email'       => ['required', 'min:6', 'max:100', 'email'],
             'phone'       => ['required', 'regex:'.$UaCellPhoneRegex],
             'position_id' => ['required', 'integer', 'exists:positions,id'],
             //            'photo'       => ['required', 'image', 'mimes:jpeg,jpg', 'max:5120'],
+        ];
+    }
+
+    public function messages() : array
+    {
+        return [
+            'phone.regex'        => __('validation.regex_cell_phone.ua'),
+            'position_id.exists' => 'Position with this ID does not exist',
         ];
     }
 
@@ -34,12 +45,19 @@ class RegisterRequest extends FormRequest
         throw new HttpResponseException($data);
     }
 
-    public function messages() : array
+    private function ensureNoPhoneEmailConflict() : void
     {
-        return [
-            'phone.regex'        => __('validation.regex_cell_phone.ua'),
-            'position_id.exists' => 'Position with this ID does not exist',
-        ];
+        $phone = $this->input('phone');
+        $email = $this->input('email');
+
+        $isPhoneExists = User::where('phone', $phone)->exists();
+        $isEmailExists = User::where('email', $email)->exists();
+
+        if ($isEmailExists || $isPhoneExists) {
+            $message = __('validation.phone_or_email_already_exists');
+
+            throw new HttpResponseException(ResponseBuilder::conflict($message));
+        }
     }
 
     private function validatePhotoSize() : void

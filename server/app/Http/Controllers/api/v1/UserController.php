@@ -6,9 +6,9 @@ use App\Contracts\TokenService;
 use App\Contracts\UserService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UsersPaginatedRequest;
 use App\Http\Responses\Api\UsersResponseBuilder;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -21,8 +21,15 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function index(Request $request) : JsonResponse
+    public function index(UsersPaginatedRequest $request) : JsonResponse
     {
+        $page = $request->validated('page', 1);
+        $perPage = $request->validated('count', 5);
+
+        $usersData = $this->userService->getAllUsersPaginated($page, $perPage)
+            ->toArray($request);
+
+        return UsersResponseBuilder::usersList($usersData);
     }
 
     public function store(RegisterRequest $request) : JsonResponse

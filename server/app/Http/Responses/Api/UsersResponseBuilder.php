@@ -17,4 +17,14 @@ class UsersResponseBuilder
 
         return response()->json($response, ResponseStatus::CREATED);
     }
+
+    final public static function usersList(array $data) : JsonResponse
+    {
+        $response = [
+            'success' => true,
+            ...$data,
+        ];
+
+        return response()->json($response, ResponseStatus::OK);
+    }
 }

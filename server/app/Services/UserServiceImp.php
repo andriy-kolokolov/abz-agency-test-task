@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Contracts\UserRepository;
 use App\Contracts\UserService;
+use App\Http\Resources\UserCollection;
 use App\Models\User;
 use Illuminate\Support\Collection;
 
@@ -19,6 +20,13 @@ class UserServiceImp implements UserService
     public function getAllUsers() : Collection
     {
         return $this->userRepository->getAll();
+    }
+
+    public function getAllUsersPaginated(int $page, int $count) : UserCollection
+    {
+        $users = $this->userRepository->getAllPaginatedOrderById($page, $count);
+
+        return new UserCollection($users);
     }
 
     public function createUser(array $validated) : User

@@ -19,7 +19,7 @@ class ResponseBuilder
         return response()->json($response, $statusCode);
     }
 
-    final public static function error(string $message = '', MessageBag $errors = null, int $statusCode = ResponseStatus::BAD_REQUEST) : JsonResponse
+    final public static function error(string $message = '', MessageBag|array $errors = null, int $statusCode = ResponseStatus::BAD_REQUEST) : JsonResponse
     {
         $response = [
             'success' => false,
@@ -30,10 +30,20 @@ class ResponseBuilder
         return response()->json($response, $statusCode);
     }
 
-    final public static function token(bool $success, string $token) : JsonResponse
+    final public static function conflict(string $message) : JsonResponse
     {
         $response = [
-            'success' => $success,
+            'success' => false,
+            'message' => $message,
+        ];
+
+        return response()->json($response, ResponseStatus::CONFLICT);
+    }
+
+    final public static function token(string $token) : JsonResponse
+    {
+        $response = [
+            'success' => true,
             'token'   => $token,
         ];
 
