@@ -12,7 +12,6 @@ return new class extends Migration {
             $table->id();
             $table->string('name', 60);
             $table->string('email')->unique();
-            $table->string('password');
             $table->string('phone');
             $table->foreignIdFor(Position::class, 'position_id');
             $table->string('photo')->comment('URL to the user photo');
