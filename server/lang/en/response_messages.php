@@ -8,6 +8,7 @@ return [
         'expired' => 'Token expired',
     ],
     'users'            => [
-        'created' => 'New user successfully registered',
+        'created'   => 'New user successfully registered',
+        'not_found' => 'User not found',
     ],
 ];

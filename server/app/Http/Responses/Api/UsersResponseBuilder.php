@@ -3,7 +3,10 @@
 namespace App\Http\Responses\Api;
 
 use App\Constants\ResponseStatus;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 class UsersResponseBuilder
 {
@@ -23,6 +26,16 @@ class UsersResponseBuilder
         $response = [
             'success' => true,
             ...$data,
+        ];
+
+        return response()->json($response, ResponseStatus::OK);
+    }
+
+    final public static function user(array|JsonResource $userData) : JsonResponse
+    {
+        $response = [
+            'success' => true,
+            'user'    => $userData,
         ];
 
         return response()->json($response, ResponseStatus::OK);

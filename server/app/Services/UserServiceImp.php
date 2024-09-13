@@ -5,7 +5,10 @@ namespace App\Services;
 use App\Contracts\UserRepository;
 use App\Contracts\UserService;
 use App\Http\Resources\UserCollection;
+use App\Http\Responses\Api\ResponseBuilder;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Collection;
 
 class UserServiceImp implements UserService
@@ -36,6 +39,12 @@ class UserServiceImp implements UserService
 
     public function getUserById(int $id) : User
     {
-        return $this->userRepository->getById($id);
+        try {
+            return $this->userRepository->getById($id);
+        } catch (ModelNotFoundException $e) {
+            throw new HttpResponseException(
+                ResponseBuilder::error(__('response_messages.users.not_found')),
+            );
+        }
     }
 }

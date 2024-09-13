@@ -16,7 +16,9 @@ class UserRepositoryImp implements UserRepository
 
     public function getAllPaginatedOrderById(int $page, int $count) : LengthAwarePaginator
     {
-        return User::orderBy('id')->paginate(perPage : $count, page : $page);
+        return User::with('position')
+            ->orderBy('id')
+            ->paginate(perPage : $count, page : $page);
     }
 
     public function create(array $validated) : User
@@ -26,6 +28,6 @@ class UserRepositoryImp implements UserRepository
 
     public function getById(int $id) : User
     {
-        return User::findOrFail($id);
+        return User::with('position')->findOrFail($id);
     }
 }

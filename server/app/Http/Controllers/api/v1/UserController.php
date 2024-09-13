@@ -7,6 +7,7 @@ use App\Contracts\UserService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UsersPaginatedRequest;
+use App\Http\Resources\SingleUserResource;
 use App\Http\Responses\Api\UsersResponseBuilder;
 use Illuminate\Http\JsonResponse;
 
@@ -50,6 +51,8 @@ class UserController extends Controller
 
     public function show(int $id) : JsonResponse
     {
-        // TODO
+        $userData = new SingleUserResource($this->userService->getUserById($id));
+
+        return UsersResponseBuilder::user($userData);
     }
 }
