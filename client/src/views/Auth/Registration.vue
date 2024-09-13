@@ -8,14 +8,33 @@ import { onMounted, reactive } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import { notification } from "ant-design-vue";
 
-const state = reactive({
+interface State {
+    fetching: boolean;
+    token: string;
+    positions: { id: number, name: string }[];
+    errors: Errors;
+}
+
+type Errors = {
+    [key in keyof Form]?: string[];
+};
+
+interface Form {
+    token: string;
+    name: string;
+    email: string;
+    phone: string;
+    position_id: number | null;
+}
+
+const state = reactive<State>({
     fetching: false,
     token: "",
     positions: [],
-    errors: [],
+    errors: {},
 });
 
-const registerForm = reactive({
+const form = reactive<Form>({
     token: "",
     name: "",
     email: "",
@@ -58,9 +77,9 @@ const getToken = () => {
 const submitRegister = () => {
     state.fetching = true;
 
-    axios.post(`${ store.apiUrl }/users`, registerForm, {
+    axios.post(`${ store.apiUrl }/users`, form, {
              headers: {
-                 Token: registerForm.token,
+                 Token: form.token,
              },
          })
          .then((res) => {
@@ -133,7 +152,7 @@ const submitRegister = () => {
             label="TOKEN"
             name="token"
         >
-            <a-input v-model:value="registerForm.token" />
+            <a-input v-model:value="form.token" />
         </a-form-item>
 
         <a-form-item
@@ -142,7 +161,7 @@ const submitRegister = () => {
             label="Name"
             name="name"
         >
-            <a-input v-model:value="registerForm.name" />
+            <a-input v-model:value="form.name" />
         </a-form-item>
 
         <a-form-item
@@ -151,7 +170,7 @@ const submitRegister = () => {
             label="Email"
             name="email"
         >
-            <a-input v-model:value="registerForm.email" />
+            <a-input v-model:value="form.email" />
         </a-form-item>
 
         <a-form-item
@@ -160,7 +179,7 @@ const submitRegister = () => {
             label="Phone"
             name="phone"
         >
-            <a-input v-model:value="registerForm.phone" />
+            <a-input v-model:value="form.phone" />
         </a-form-item>
 
         <a-form-item
@@ -169,7 +188,7 @@ const submitRegister = () => {
             label="Position"
             name="position_id"
         >
-            <a-select v-model:value="registerForm.position_id">
+            <a-select v-model:value="form.position_id">
                 <a-select-option
                     v-for="position in state.positions"
                     :key="position.id"

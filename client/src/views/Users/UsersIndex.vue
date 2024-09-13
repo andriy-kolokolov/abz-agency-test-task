@@ -2,7 +2,7 @@
     setup
     lang="ts"
 >
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import axios from "axios";
 import store from "@/store";
 import { SearchOutlined } from "@ant-design/icons-vue";
@@ -19,6 +19,7 @@ interface UsersResource {
 }
 
 interface UsersData {
+    success: boolean,
     page: number,
     total_pages: number,
     total_users: number,
@@ -61,27 +62,9 @@ const columns = [
     },
 ];
 
-const users = ref<{
-    success: boolean,
-    data: UsersData,
-}>({
-    success: false,
-    data: {
-        page: 0,
-        total_pages: 0,
-        total_users: 0,
-        count: 0,
-        links: {
-            next_url: "",
-            prev_url: "",
-        },
-        users: [],
-    },
-});
-
 const state = reactive({
     fetching: false,
-
+    usersData: {} as UsersData,
 });
 
 const pagination = reactive({
@@ -98,7 +81,7 @@ const getUsers = async () => {
             page: pagination.current,
         },
     }).then((res) => {
-        users.value = res;
+        state.usersData = res.data as UsersData;
     }).catch((err) => {
         notification.error({
             message: err.response.data.message,
@@ -138,21 +121,20 @@ const onPaginationChange = (page: number, pageSize: number) => {
         size="small"
         :loading=" state.fetching"
         :columns="columns"
-        :data-source="users.data.users"
+        :data-source="state.usersData.users"
         rowKey="id"
         :pagination="{
-            current: users.data.page,
-            pageSize: users.data.count,
-            total: users.data.total_users,
-            showSizeChanger: true,
-            size: 'large',
-            showTotal(total, range) {
-                return `${ range[0] }-${ range[1] } of ${ total } items`;
-            },
-            onChange: onPaginationChange,
-        }"
+                current: state.usersData.page,
+                pageSize: state.usersData.count,
+                total:state.usersData.total_users,
+                showSizeChanger: true,
+                size: 'default',
+                showTotal(total:number, range:[number, number]) {
+                    return `${ range[0] }-${ range[1] } of ${ total } items`;
+                },
+                onChange: onPaginationChange,
+            }"
     />
-
 </template>
 
 <style scoped>
