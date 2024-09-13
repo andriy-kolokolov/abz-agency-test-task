@@ -49,4 +49,14 @@ class ResponseBuilder
 
         return response()->json($response, ResponseStatus::OK);
     }
+
+    final public static function notFound() : JsonResponse
+    {
+        $response = [
+            'success' => false,
+            'message' => __('response_messages.page_not_found'),
+        ];
+
+        return response()->json($response, ResponseStatus::NOT_FOUND);
+    }
 }
