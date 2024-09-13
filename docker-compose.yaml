@@ -1,0 +1,52 @@
+version: '3'
+services:
+  nginx:
+    build:
+      context: .
+      target: nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/templates:/etc/nginx/templates
+    depends_on:
+      - php
+
+  php:
+    build:
+      context: .
+      target: backend
+    container_name: php
+    restart: always
+    env_file:
+      - ./server/.env.production
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=abz_user
+      - DB_PASSWORD=rootpasswd
+      - DB_DATABASE=abz_task_db
+    volumes:
+      - ./server:/srv/app
+    expose:
+      - 9000
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: abz_task_db
+      MYSQL_USER: abz_user
+      MYSQL_PASSWORD: rootpasswd
+      MYSQL_ROOT_PASSWORD: rootpasswd
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:
