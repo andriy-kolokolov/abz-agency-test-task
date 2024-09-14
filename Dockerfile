@@ -32,9 +32,6 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 RUN mkdir -p /var/run/php
 
-COPY --link docker/php/docker-entrypoint.sh /usr/local/bin/entrypoint
-RUN chmod +x /usr/local/bin/entrypoint
-
 COPY --from=composer/composer:2-bin --link /composer /usr/bin/composer
 
 COPY server/composer.* ./
@@ -48,9 +45,6 @@ RUN mkdir -p ./storage/framework/views && mkdir -p ./storage/framework/cache && 
 RUN chown www-data.www-data -R storage/ && chown www-data.www-data -R vendor/
 
 USER www-data:www-data
-
-ENTRYPOINT ["entrypoint"]
-CMD ["php-fpm"]
 
 FROM nginx:1.25.1-alpine AS nginx
 
