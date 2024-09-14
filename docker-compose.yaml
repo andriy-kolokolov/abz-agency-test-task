@@ -28,7 +28,7 @@ services:
       - DB_PASSWORD=rootpasswd
       - DB_DATABASE=abz_task_db
     volumes:
-      - ./server:/srv/app
+      - ./server:/var/www
     expose:
       - 9000
     depends_on:

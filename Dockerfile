@@ -32,17 +32,30 @@ RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 RUN mkdir -p /var/run/php
 
+COPY --link docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+
 COPY --from=composer/composer:2-bin --link /composer /usr/bin/composer
 
 COPY server/composer.* ./
 RUN set -eux; \
-	composer install --prefer-dist --no-dev --no-autoloader --no-scripts --no-progress; \
+	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
 	composer clear-cache
 
+COPY --link server . ./
 COPY --chown=www-data:www-data --link . .
 COPY --chown=www-data:www-data --from=frontend_build --link /srv/app/public public/
-RUN mkdir -p ./storage/framework/views && mkdir -p ./storage/framework/cache && mkdir -p ./storage/framework/sessions
-RUN chown www-data.www-data -R storage/ && chown www-data.www-data -R vendor/
+RUN mkdir -p ./storage/framework/views \
+    && mkdir -p ./storage/framework/cache \
+    && mkdir -p ./storage/framework/sessions \
+    && mkdir -p ./bootstrap/cache
+
+RUN chown www-data.www-data -R storage/ \
+    && chown www-data.www-data -R vendor/ \
+    && chown www-data.www-data -R bootstrap/
+
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["php-fpm"]
 
 USER www-data:www-data
 
