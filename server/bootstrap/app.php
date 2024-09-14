@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Responses\Api\ResponseBuilder;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath : dirname(__DIR__))
     ->withRouting(
@@ -15,7 +14,10 @@ return Application::configure(basePath : dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (NotFoundHttpException $e, Request $request) {
-            return ResponseBuilder::notFound();
+        $exceptions->render(function (Throwable $e, Request $request) {
+            $statusCode = 500;
+
+            throw new HttpException($statusCode, $e->getMessage(), $e);
         });
     })->create();
+
