@@ -7,9 +7,11 @@ import store from "@/store";
 import { onMounted, reactive } from "vue";
 import { SearchOutlined } from "@ant-design/icons-vue";
 import { notification } from "ant-design-vue";
+import type { SelectValue } from "ant-design-vue/es/select";
 
 interface State {
     fetching: boolean;
+    fetchingToken: boolean;
     token: string;
     positions: { id: number, name: string }[];
     errors: Errors;
@@ -24,11 +26,12 @@ interface Form {
     name: string;
     email: string;
     phone: string;
-    position_id: number | null;
+    position_id: SelectValue;
 }
 
 const state = reactive<State>({
     fetching: false,
+    fetchingToken: false,
     token: "",
     positions: [],
     errors: {},
@@ -39,7 +42,7 @@ const form = reactive<Form>({
     name: "",
     email: "",
     phone: "",
-    position_id: null,
+    position_id: undefined,
 });
 
 onMounted(() => {
@@ -63,14 +66,15 @@ onMounted(() => {
 });
 
 const getToken = () => {
-    state.fetching = true;
+    state.fetchingToken = true;
 
     axios.get(`${ store.apiUrl }/token`)
          .then((res) => {
+             console.log("RES: ", res);
              state.token = res.data.token;
          })
          .finally(() => {
-             state.fetching = false;
+             state.fetchingToken = false;
          });
 };
 
@@ -117,7 +121,7 @@ const submitRegister = () => {
             <a-button
                 @click="getToken"
                 type="primary"
-                :loading="state.fetching"
+                :loading="state.fetchingToken"
             >
                 <template #icon>
                     <SearchOutlined />
@@ -201,6 +205,7 @@ const submitRegister = () => {
 
         <a-form-item>
             <a-button
+                :loading="state.fetching"
                 type="primary"
                 @click="submitRegister"
             >

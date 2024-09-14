@@ -6,15 +6,12 @@ import { reactive } from "vue";
 import axios from "axios";
 import store from "@/store";
 import { notification } from "ant-design-vue";
-/*
- 'id'                     => $this->id,
-            'name'                   => $this->name,
-            'email'                  => $this->email,
-            'phone'                  => $this->phone,
-            'position'               => $this->position->name,
-            'position_id'            => $this->position_id,
-            'photo'                  => $this->photo,
- */
+
+interface State {
+    fetching: boolean;
+    userId: number | undefined;
+    userData: UserData | null;
+}
 
 interface UserData {
     success: boolean,
@@ -28,10 +25,11 @@ interface UserData {
         photo: string,
     }
 }
-const state = reactive({
+
+const state = reactive<State>({
     fetching: false,
-    userId: null,
-    userData: null as UserData | null,
+    userId: undefined,
+    userData: null,
 });
 
 const getUser = async () => {
