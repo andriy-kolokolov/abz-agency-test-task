@@ -17,12 +17,13 @@ class RegisterRequest extends FormRequest
 
         $this->ensureNoPhoneEmailConflict();
 
+
         return [
             'name'        => ['required', 'string', 'min:2', 'max:60'],
             'email'       => ['required', 'min:6', 'max:100', 'email'],
             'phone'       => ['required', 'regex:'.$UaCellPhoneRegex],
             'position_id' => ['required', 'integer', 'exists:positions,id'],
-            //            'photo'       => ['required', 'image', 'mimes:jpeg,jpg', 'max:5120'],
+            'photo'       => ['required', 'image', 'mimes:jpeg,jpg', 'max:5120'],
         ];
     }
 

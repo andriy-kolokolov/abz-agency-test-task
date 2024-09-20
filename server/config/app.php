@@ -52,7 +52,10 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost:8000'),
+
+    // for docker container
+    'app_docker_host' => env('APP_DOCKER_HOST', 'http://php:9000'),
 
     /*
     |--------------------------------------------------------------------------

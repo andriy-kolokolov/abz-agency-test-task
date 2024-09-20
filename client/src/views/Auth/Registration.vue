@@ -5,8 +5,8 @@
 import axios from "axios";
 import store from "@/store";
 import { onMounted, reactive } from "vue";
-import { SearchOutlined } from "@ant-design/icons-vue";
-import { notification } from "ant-design-vue";
+import { SearchOutlined, UploadOutlined } from "@ant-design/icons-vue";
+import { notification, type UploadFile } from "ant-design-vue";
 import type { SelectValue } from "ant-design-vue/es/select";
 
 interface State {
@@ -15,6 +15,7 @@ interface State {
     token: string;
     positions: { id: number, name: string }[];
     errors: Errors;
+    fileList: UploadFile[];
 }
 
 type Errors = {
@@ -27,6 +28,7 @@ interface Form {
     email: string;
     phone: string;
     position_id: SelectValue;
+    photo?: UploadFile & Blob;
 }
 
 const state = reactive<State>({
@@ -35,6 +37,7 @@ const state = reactive<State>({
     token: "",
     positions: [],
     errors: {},
+    fileList: [],
 });
 
 const form = reactive<Form>({
@@ -43,6 +46,7 @@ const form = reactive<Form>({
     email: "",
     phone: "",
     position_id: undefined,
+    photo: undefined,
 });
 
 onMounted(() => {
@@ -80,10 +84,25 @@ const getToken = () => {
 
 const submitRegister = () => {
     state.fetching = true;
+    console.log(form.photo);
 
-    axios.post(`${ store.apiUrl }/users`, form, {
+    const formData = new FormData();
+
+    formData.append("token", form.token);
+
+    formData.append("name", form.name);
+    formData.append("email", form.email);
+    formData.append("phone", form.phone);
+    formData.append("position_id", form.position_id as string);
+
+    if (form.photo) {
+        formData.append("photo", form.photo, form.photo.name);
+    }
+
+    axios.post(`${ store.apiUrl }/users`, formData, {
              headers: {
                  Token: form.token,
+                 "Content-Type": "multipart/form-data",
              },
          })
          .then((res) => {
@@ -113,10 +132,19 @@ const submitRegister = () => {
          });
 };
 
+const handleUploadChange = ({ fileList }: { fileList: UploadFile[] }) => {
+    if (fileList.length > 0) {
+        form.photo = fileList[0].originFileObj;
+    } else {
+        form.photo = undefined;
+    }
+};
+
 </script>
 
 <template>
     <a-card>
+        {{ form.photo }}
         <template #title>
             <a-button
                 @click="getToken"
@@ -201,6 +229,23 @@ const submitRegister = () => {
                     {{ position.name }}
                 </a-select-option>
             </a-select>
+        </a-form-item>
+
+        <a-form-item
+            label="Profile Photo"
+            :validate-status="state.errors?.photo ? 'error' : ''"
+            :help="state.errors?.photo ? state.errors?.photo[0] : ''"
+        >
+            <a-upload
+                v-model:file-list="state.fileList"
+                :before-upload="() => { return false; }"
+                @change="handleUploadChange"
+            >
+                <a-button v-if="state.fileList.length < 1">
+                    <UploadOutlined />
+                    Click to Upload
+                </a-button>
+            </a-upload>
         </a-form-item>
 
         <a-form-item>

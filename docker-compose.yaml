@@ -29,6 +29,7 @@ services:
       - DB_DATABASE=abz_task_db
     volumes:
       - ./server:/var/www
+      - ./server/public:/var/www/public
     expose:
       - 9000
     depends_on:
