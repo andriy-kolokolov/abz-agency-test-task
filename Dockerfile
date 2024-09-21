@@ -1,3 +1,5 @@
+ARG ENVIRONMENT=production
+
 FROM node:lts-alpine AS frontend_build
 
 WORKDIR /srv/app
@@ -7,6 +9,7 @@ COPY client/. .
 RUN npm run build
 
 FROM php:8.2-fpm-alpine AS backend
+ARG ENVIRONMENT
 
 WORKDIR /srv/app
 COPY --from=mlocati/php-extension-installer --link /usr/bin/install-php-extensions /usr/local/bin/
@@ -18,6 +21,7 @@ RUN apk add \
 		git \
 		mariadb-client \
 		mariadb-connector-c \
+        nano \
 	;
 
 RUN set -eux; \
@@ -43,6 +47,10 @@ RUN set -eux; \
 	composer clear-cache
 
 COPY --link server . ./
+RUN cp .env.$ENVIRONMENT .env && \
+    chown www-data:www-data .env && \
+    chmod 644 .env
+
 COPY --chown=www-data:www-data --link . .
 COPY --chown=www-data:www-data --from=frontend_build --link /srv/app/public public/
 RUN mkdir -p ./storage/framework/views \
