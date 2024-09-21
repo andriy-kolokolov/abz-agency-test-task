@@ -30,6 +30,7 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
         php artisan migrate --force
         php artisan db:seed --force
         php artisan optimize:clear
+        php artisan storage:link
     fi
 fi
 

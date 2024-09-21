@@ -58,9 +58,9 @@ RUN mkdir -p ./storage/framework/views \
     && mkdir -p ./storage/framework/sessions \
     && mkdir -p ./bootstrap/cache
 
-RUN chown www-data.www-data -R storage/ \
-    && chown www-data.www-data -R vendor/ \
-    && chown www-data.www-data -R bootstrap/
+RUN chown -R www-data:www-data /srv/app \
+    && chmod -R 755 /srv/app/storage \
+    && chmod -R 755 /srv/app/bootstrap/cache
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]
