@@ -17,13 +17,18 @@ class RegisterRequest extends FormRequest
 
         $this->ensureNoPhoneEmailConflict();
 
-
         return [
             'name'        => ['required', 'string', 'min:2', 'max:60'],
             'email'       => ['required', 'min:6', 'max:100', 'email'],
             'phone'       => ['required', 'regex:'.$UaCellPhoneRegex],
             'position_id' => ['required', 'integer', 'exists:positions,id'],
-            'photo'       => ['required', 'image', 'mimes:jpeg,jpg', 'max:5120'],
+            'photo'       => [
+                'required',
+                'image',
+                'mimes:jpeg,jpg',
+                'max:5120',
+                'dimensions:min_width=70,min_height=70',
+            ],
         ];
     }
 
@@ -31,7 +36,9 @@ class RegisterRequest extends FormRequest
     {
         return [
             'phone.regex'        => __('validation.regex_cell_phone.ua'),
-            'position_id.exists' => 'Position with this ID does not exist',
+            'position_id.exists' => __('validation.models.positions.exists'),
+            'photo.dimensions'   => __('validation.models.users.photo.dimensions'),
+            'photo.max'          => __('validation.models.users.photo.size_max'),
         ];
     }
 
@@ -59,11 +66,5 @@ class RegisterRequest extends FormRequest
 
             throw new HttpResponseException(ResponseBuilder::conflict($message));
         }
-    }
-
-    private function validatePhotoSize() : void
-    {
-        // photo must be 70 X 70 min
-        // TODO: Implement validatePhotoSize() method.
     }
 }

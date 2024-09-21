@@ -2,36 +2,36 @@
 
 namespace App\Services;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Http\UploadedFile;
 
 abstract class BaseStorageService
 {
-    abstract protected function getPublicStoragePath() : string;
+    private Filesystem $storage;
 
-    public function store(UploadedFile $file) : string
+    public function __construct(Filesystem $storage)
     {
-        $filename = time().'_'.$file->getClientOriginalName();
-        $publicStoragePath = $this->getPublicStoragePath();
-
-        $file->move(public_path($publicStoragePath), $filename);
-
-        return $this->buildUrl($filename);
+        $this->storage = $storage;
     }
 
-    private function resolveHost() : string
-    {
-        if (app()->environment('production')) {
-            return config('app.app_docker_host');
-        }
+    abstract protected function getFolderPath() : string;
 
-        return config('app.url');
+    final public function store(UploadedFile $file) : string
+    {
+        $filename = $this->makeFileName($file);
+
+        $this->storage->putFileAs($this->getFolderPath(), $file, $filename);
+
+        return $this->makeUrl($filename);
     }
 
-    private function buildUrl(string $filename) : string
+    private function makeUrl(string $filename) : string
     {
-        $storagePath = $this->getPublicStoragePath();
-        $host = $this->resolveHost();
+        return $this->storage->url($this->getFolderPath().'/'.$filename);
+    }
 
-        return "$host/$storagePath/$filename";
+    private function makeFileName(UploadedFile $file) : string
+    {
+        return time().'_'.$file->getClientOriginalName();
     }
 }

@@ -16,6 +16,7 @@ interface State {
     positions: { id: number, name: string }[];
     errors: Errors;
     fileList: UploadFile[];
+    formHasErrors: boolean;
 }
 
 type Errors = {
@@ -38,6 +39,7 @@ const state = reactive<State>({
     positions: [],
     errors: {},
     fileList: [],
+    formHasErrors: false,
 });
 
 const form = reactive<Form>({
@@ -106,10 +108,14 @@ const submitRegister = () => {
              },
          })
          .then((res) => {
-             notification.success({
-                 message: "Success",
-                 description: res.data.message,
-             });
+             if (res.data.success) {
+                 notification.success({
+                     message: "Success",
+                     description: res.data.message,
+                 });
+
+                 state.errors = {};
+             }
          })
          .catch((err) => {
              if (!err.response.data.success) {
@@ -144,7 +150,6 @@ const handleUploadChange = ({ fileList }: { fileList: UploadFile[] }) => {
 
 <template>
     <a-card>
-        {{ form.photo }}
         <template #title>
             <a-button
                 @click="getToken"

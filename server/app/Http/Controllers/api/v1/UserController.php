@@ -9,23 +9,19 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UsersPaginatedRequest;
 use App\Http\Resources\SingleUserResource;
 use App\Http\Responses\Api\UsersResponseBuilder;
-use App\Services\UserImageStorageService;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
     private TokenService $tokenService;
     private UserService $userService;
-    private UserImageStorageService $fileStorageService;
 
     public function __construct(
-        TokenService            $tokenService,
-        UserService             $userService,
-        UserImageStorageService $fileStorageService,
+        TokenService $tokenService,
+        UserService  $userService,
     ) {
         $this->tokenService = $tokenService;
         $this->userService = $userService;
-        $this->fileStorageService = $fileStorageService;
     }
 
     public function index(UsersPaginatedRequest $request) : JsonResponse
@@ -42,15 +38,12 @@ class UserController extends Controller
     public function store(RegisterRequest $request) : JsonResponse
     {
         $token = $request->header('Token');
-
         $this->tokenService->validateToken($token);
 
-        $url = $this->fileStorageService->store($request->file('photo'));
-
-        $user = $this->userService->createUser([
-            ...$request->validated(),
-            'photo' => $url,
-        ]);
+        $user = $this->userService->createUser(
+            $request->validated(),
+            $request->file('photo'),
+        );
 
         $this->tokenService->deleteToken($token);
 

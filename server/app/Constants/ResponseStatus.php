@@ -12,4 +12,5 @@ class ResponseStatus
     public const NOT_FOUND = 404;
     public const CONFLICT = 409;
     public const UNPROCESSABLE_CONTENT = 422;
+    public const SERVER_ERROR = 500;
 }

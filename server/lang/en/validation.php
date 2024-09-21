@@ -113,6 +113,18 @@ return [
     'missing_unless' => 'The :attribute field must be missing unless :other is :value.',
     'missing_with' => 'The :attribute field must be missing when :values is present.',
     'missing_with_all' => 'The :attribute field must be missing when :values are present.',
+    'models' => [
+        'users' => [
+            'phone_or_email_already_exists' => 'User with this phone or email already exist',
+            'photo' => [
+                'dimensions' => 'The photo must be at least 70x70 pixels.',
+                'size_max' => 'The photo must be less than 5 MB.',
+            ],
+        ],
+        'positions' => [
+            'exists' => 'Position with this ID does not exist',
+        ],
+    ],
     'multiple_of' => 'The :attribute field must be a multiple of :value.',
     'not_in' => 'The selected :attribute is invalid.',
     'not_regex' => 'The :attribute field format is invalid.',

@@ -2,10 +2,20 @@
 
 namespace App\Services;
 
+use App\Traits\OptimizesImageTrait;
+use Illuminate\Support\Facades\Storage;
+
 class UserImageStorageService extends BaseStorageService
 {
-    protected function getPublicStoragePath() : string
+    use OptimizesImageTrait;
+
+    public function __construct()
     {
-        return 'public/user_images';
+        parent::__construct(Storage::disk('local'));
+    }
+
+    protected function getFolderPath() : string
+    {
+        return 'user_images';
     }
 }

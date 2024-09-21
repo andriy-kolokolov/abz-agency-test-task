@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\ResponseStatus;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,9 +16,10 @@ return Application::configure(basePath : dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e, Request $request) {
-            $statusCode = 500;
-
-            throw new HttpException($statusCode, $e->getMessage(), $e);
+            return response()->json([
+                'success' => false,
+                'error'   => $e->getMessage(),
+            ], ResponseStatus::SERVER_ERROR);
         });
     })->create();
 

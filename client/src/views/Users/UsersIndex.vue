@@ -6,7 +6,7 @@ import { h, reactive } from "vue";
 import axios from "axios";
 import store from "@/store";
 import { SearchOutlined } from "@ant-design/icons-vue";
-import { notification } from "ant-design-vue";
+import { notification, Image } from "ant-design-vue";
 
 interface UsersResource {
     id: number,
@@ -60,12 +60,9 @@ const columns = [
         title: "Photo",
         dataIndex: "photo",
         customRender: ({ record }: { record: any }) => {
-            console.log(record.photo);
-
-            //http://localhost:8000/client/public/1726845282_y_48cf5cb7.jpg
             const url = record.photo;
 
-            return h("img", {
+            return h(Image, {
                 src: url,
                 alt: "User Photo",
                 style: {
