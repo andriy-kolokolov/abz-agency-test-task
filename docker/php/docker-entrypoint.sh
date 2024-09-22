@@ -28,10 +28,11 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
     if [ "$(find ./database/migrations -iname '*.php' -print -quit)" ]; then
         php artisan migrate --force
-        php artisan db:seed --force
-        php artisan optimize:clear
-        php artisan storage:link
     fi
+
+    php artisan db:seed --force
+    php artisan optimize:clear
+    php artisan storage:link
 fi
 
 exec docker-php-entrypoint "$@"

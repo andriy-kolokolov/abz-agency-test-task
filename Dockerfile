@@ -56,10 +56,16 @@ COPY --chown=www-data:www-data --from=frontend_build --link /srv/app/public publ
 RUN mkdir -p ./storage/framework/views \
     && mkdir -p ./storage/framework/cache \
     && mkdir -p ./storage/framework/sessions \
-    && mkdir -p ./bootstrap/cache
+    && mkdir -p ./bootstrap/cache \
+    && mkdir -p ./storage/framework/views
 
-RUN chown -R www-data:www-data /srv/app \
+RUN chown -R www-data:www-data /srv/app/storage \
     && chmod -R 755 /srv/app/storage \
+    && chmod -R 755 /srv/app/bootstrap/cache \
+    && chmod -R 755 /srv/app/public \
+    && chmod -R 755 /srv/app/storage/framework/views \
+    && chmod -R 755 /srv/app/storage/framework/cache \
+    && chmod -R 755 /srv/app/storage/framework/sessions \
     && chmod -R 755 /srv/app/bootstrap/cache
 
 ENTRYPOINT ["docker-entrypoint"]
