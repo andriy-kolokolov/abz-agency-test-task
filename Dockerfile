@@ -39,34 +39,35 @@ RUN mkdir -p /var/run/php
 COPY --link docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
-COPY --from=composer/composer:2-bin --link /composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY server/composer.* ./
 RUN set -eux; \
 	composer install --prefer-dist --no-autoloader --no-scripts --no-progress; \
 	composer clear-cache
 
+RUN chown -R www-data:www-data /srv/app/vendor
+
 COPY --link server . ./
 RUN cp .env.$ENVIRONMENT .env && \
     chown www-data:www-data .env && \
     chmod 644 .env
 
-COPY --chown=www-data:www-data --link . .
-COPY --chown=www-data:www-data --from=frontend_build --link /srv/app/public public/
-RUN mkdir -p ./storage/framework/views \
-    && mkdir -p ./storage/framework/cache \
-    && mkdir -p ./storage/framework/sessions \
-    && mkdir -p ./bootstrap/cache \
-    && mkdir -p ./storage/framework/views
+# create laravel required directories
+RUN mkdir -p storage/framework/cache \
+    && mkdir -p storage/framework/sessions \
+    && mkdir -p storage/framework/views \
+    && mkdir -p storage/logs \
+    && mkdir -p bootstrap/cache
 
-RUN chown -R www-data:www-data /srv/app/storage \
-    && chmod -R 755 /srv/app/storage \
-    && chmod -R 755 /srv/app/bootstrap/cache \
-    && chmod -R 755 /srv/app/public \
-    && chmod -R 755 /srv/app/storage/framework/views \
-    && chmod -R 755 /srv/app/storage/framework/cache \
-    && chmod -R 755 /srv/app/storage/framework/sessions \
-    && chmod -R 755 /srv/app/bootstrap/cache
+# Set up permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+RUN chown -R www-data:www-data /srv/app
+
+# for symlinking the public folder
+RUN chmod -R 755 /srv/app/public
 
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["php-fpm"]

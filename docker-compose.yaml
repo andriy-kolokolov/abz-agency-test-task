@@ -9,6 +9,7 @@ services:
       - "80:80"
     volumes:
       - ./docker/nginx/templates:/etc/nginx/templates
+      - ./server/storage:/srv/app/storage
     depends_on:
       - php
 
@@ -18,8 +19,6 @@ services:
       target: backend
     container_name: php
     restart: always
-    env_file:
-      - ./server/.env.production
     environment:
       - DB_CONNECTION=mysql
       - DB_HOST=mysql
@@ -27,12 +26,10 @@ services:
       - DB_USERNAME=abz_user
       - DB_PASSWORD=rootpasswd
       - DB_DATABASE=abz_task_db
-    volumes:
-      - ./server:/srv/app
-      - ./server/public:/srv/app/public
-      - ./server/storage:/srv/app/storage
     expose:
       - 9000
+    volumes:
+      - ./server/storage:/srv/app/storage
     depends_on:
       - mysql
     command: php artisan serve --host=0.0.0.0 --port=9000
