@@ -9,7 +9,6 @@ services:
       - "80:80"
     volumes:
       - ./docker/nginx/templates:/etc/nginx/templates
-      - ./server/storage:/srv/app/storage
     depends_on:
       - php
 
@@ -28,8 +27,6 @@ services:
       - DB_DATABASE=abz_task_db
     expose:
       - 9000
-    volumes:
-      - ./server/storage:/srv/app/storage
     depends_on:
       - mysql
     command: php artisan serve --host=0.0.0.0 --port=9000
