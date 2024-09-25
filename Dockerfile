@@ -64,6 +64,9 @@ RUN mkdir -p storage/framework/cache \
 RUN chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
+RUN chown -R www-data:www-data /srv/app/storage \
+    && chmod -R 775 /srv/app/storage
+
 RUN chown -R www-data:www-data /srv/app
 
 # for symlinking the public folder
